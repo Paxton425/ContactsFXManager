@@ -1,0 +1,85 @@
+/*
+ * Empty Stylesheet file.
+ */
+
+.contact-dialog-anchor-pane {
+   -fx-border-color: gray;
+}
+
+.cancel-button, .contact-options-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+}
+
+.cancel-button:hover, 
+.contact-options-button:hover,
+.email-button:hover, 
+.edit-contact-button:hover, 
+.delete-contact-button:hover {
+    -fx-background-color: #e1e2e1;
+}
+
+.edit-contact-button, .email-button {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 100;
+    -fx-border-radius: 100;
+    -fx-border-color: #31a1c9;
+    -fx-border-width: 1;
+}
+
+.delete-contact-button {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 100;
+    -fx-border-radius: 100;
+    -fx-border-color: #ff0000;
+    -fx-border-width: 1;
+}
+
+
+.dialog-contact-email {
+    -fx-text-fill: #5594ab;
+}
+
+.dialog-contact-email:hover {
+    -fx-text-fill: #f536c5;
+}
+
+.contact-info-hbox{
+    -fx-background-color: #e1e2e1;
+    -fx-background-radius: 10;
+    -fx-border-width: 0;
+}
+
+.edit-contact-top-menu-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+    -fx-border-width: 0;
+}
+.edit-image-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 100;
+    -fx-background-color: #246f9a;
+    -fx-border-width: 0;
+}
+.edit-image-button:hover{
+    -fx-background-color: #5594ab;
+}
+
+.edit-contact-top-menu-button:hover {
+    -fx-background-color: #e1e2e1;
+    -fx-font-size: 14px;
+}
+
+.edit-contact-text-field {
+    -fx-border-style: solid;
+    -fx-border-width: 0 0 2 0;
+    -fx-border-color: derive(gray, 70%);
+    -fx-background-color: transparent;
+    -fx-padding: 0 0 -5 5;
+    -fx-text-fill: derive(black, 70%);
+    -fx-font-size: 18px;
+}
+
+.edit-contact-text-field:focused {
+    -fx-border-color: #1f82c9;
+}

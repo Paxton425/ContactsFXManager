@@ -1,0 +1,107 @@
+/*def defaultblue = #139cf7;*/
+
+.main-hamburger-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+    -fx-border-width: 0;
+}
+.main-hamburger-button:hover {
+    -fx-background-color: #e1e2e1;
+}
+
+.split-pane > .split-pane-divider {
+    -fx-background-color: '#d6d6d6';
+    -fx-background-radius: 0;
+    -fx-padding: 0.5px; /*asjust the padding to change the size of the divider*/
+}
+
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-padding: -1;
+}
+.scroll-bar { 
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.scroll-bar:hover {
+    -fx-background-color: silver;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: silver;
+    -fx-background-insets: 0, 0, 0;
+    -fx-background-radius: 0em;
+}
+
+.scroll-bar .thumb:hover {
+    -fx-background-color: derive(black, 60%);
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow{
+    -fx-shape: " ";    
+    -fx-padding :0;
+}
+
+.scroll-bar .increment-button ,
+.scroll-bar .decrement-button {
+    -fx-background-color :transparent;
+    -fx-background-radius : 0.0em;
+    -fx-padding :0.0 10.0 0.0 0.0;
+}
+
+.contact-menu-triger-btn{
+    -fx-background-color: transparent;
+}
+.contact-menu-triger-btn:hover{
+    -fx-background-radius: 100;
+    -fx-background-radius: 100;
+    -fx-background-color: '#e1e2e1';
+}
+
+menuVBox {
+    -fx-border-width: 0;
+}
+.menuVBox > .button{
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-alignment: baseline-left;
+}
+.menuVBox > .button:hover {
+    -fx-background-color: '#e1e2e1';
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-alignment: baseline-left;
+}
+
+
+
+.topmenu-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+}
+.topmenu-button:hover {
+    -fx-border-width: 0 0 3px 0;
+    -fx-border-color: #139cf7;
+}
+
+.contact-info-button, .contact-info-title-pane .content, .contact-info-title-pane  .title{
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+    -fx-border-width: 0;
+}
+.contact-info-button:hover {
+    -fx-background-color: #e1e2e1;
+}
+
+.contact-item-button{
+    -fx-border-width: 0;
+    -fx-background-color: #FFF;
+    -fx-background-radius: 0;
+    -fx-min-height: 50;
+}
+.contact-item-button:hover {
+    -fx-background-color: #e1e2e1;
+}

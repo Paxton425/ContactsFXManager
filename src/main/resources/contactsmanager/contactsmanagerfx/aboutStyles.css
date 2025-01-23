@@ -1,0 +1,13 @@
+/*
+ * Empty Stylesheet file.
+ */
+
+.logo-pane, .software-info-pane {
+    -fx-border-color: #d6d6d6;
+}
+
+.close-button {
+    -fx-background-color:#ffffff;
+    -fx-border-color: #d6d6d6;
+    -fx-border-radius: 0;
+}

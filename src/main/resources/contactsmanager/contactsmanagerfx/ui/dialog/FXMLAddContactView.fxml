@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ContextMenu?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #e10e10e10; -fx-border-color: #d6d6d6;" stylesheets="@fxmldialog.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="contactsmanager.contactsmanagerfx.ui.dialog.AddContactFXMLController">
+    <children>
+        <VBox prefHeight="511.0" prefWidth="617.0">
+            <children>
+                <AnchorPane>
+                    <children>
+                        <Label text="Add Contact" textFill="#2b70a4" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <font>
+                                <Font name="System Bold" size="30.0" />
+                            </font>
+                            <padding>
+                                <Insets left="5.0" right="60.0" />
+                            </padding>
+                        </Label>
+                        <HBox alignment="CENTER_LEFT" prefHeight="58.0" prefWidth="389.0" spacing="2.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <children>
+                                <Button fx:id="saveButton" onAction="#handleSaveContactAction" prefHeight="58.0" prefWidth="144.0" styleClass="edit-contact-top-menu-button" text="Save Changes">
+                                    <graphic>
+                                        <FontIcon iconColor="#2b70a4" iconLiteral="mdi2f-floppy" iconSize="30" />
+                                    </graphic>
+                                </Button>
+                                <Button fx:id="cancelButton" onAction="#handleExitWindowAction" prefHeight="58.0" prefWidth="156.0" styleClass="edit-contact-top-menu-button" text="Discard Changes">
+                                    <graphic>
+                                        <FontIcon iconColor="#973232" iconLiteral="mdi2f-file-remove" iconSize="30" />
+                                    </graphic>
+                                </Button>
+                                <Separator orientation="VERTICAL" prefHeight="200.0">
+                                    <HBox.margin>
+                                        <Insets right="-2.0" />
+                                    </HBox.margin>
+                                </Separator>
+                                <Button fx:id="exitButton" onAction="#handleExitWindowAction" prefHeight="58.0" prefWidth="82.0" styleClass="edit-contact-top-menu-button" text="Exit">
+                                    <graphic>
+                                        <FontIcon iconColor="#973232" iconLiteral="mdi2e-exit-to-app" iconSize="30" />
+                                    </graphic>
+                                </Button>
+                            </children>
+                        </HBox>
+                    </children>
+                </AnchorPane>
+                <Separator prefWidth="200.0">
+                    <VBox.margin>
+                        <Insets bottom="20.0" />
+                    </VBox.margin>
+                </Separator>
+                <VBox prefWidth="580.0" spacing="10.0" VBox.vgrow="NEVER">
+                    <children>
+                        <VBox>
+                            <children>
+                                <HBox>
+                                    <children>
+                                        <VBox>
+                                            <children>
+                                                <HBox prefHeight="50.0" prefWidth="552.0" spacing="10.0">
+                                                    <children>
+                                                        <Label text="Name:" />
+                                                        <TextField fx:id="editNameField" prefWidth="200.0" styleClass="edit-contact-text-field" />
+                                                    </children>
+                                                </HBox>
+                                                <HBox prefHeight="50.0" prefWidth="552.0" spacing="10.0">
+                                                    <children>
+                                                        <Label text="Phone Number:" />
+                                                        <TextField fx:id="editNumberField" prefWidth="200.0" styleClass="edit-contact-text-field" />
+                                                    </children>
+                                                </HBox>
+                                                <HBox prefHeight="50.0" prefWidth="552.0" spacing="10.0">
+                                                    <children>
+                                                        <Label text="Email:" />
+                                                        <TextField fx:id="editEmailField" prefWidth="200.0" styleClass="edit-contact-text-field" />
+                                                    </children>
+                                                </HBox>
+                                            </children>
+                                        </VBox>
+                                        <AnchorPane>
+                                            <HBox.margin>
+                                                <Insets right="20.0" top="-20.0" />
+                                            </HBox.margin>
+                                            <children>
+                                                <Circle fx:id="imageCircle" fill="#d7d7d7" layoutX="81.0" layoutY="81.0" radius="81.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+
+                                                <Button fx:id="editImageButton" layoutX="48.0" layoutY="117.0" onAction="#handleImageMenu" prefHeight="33.0" prefWidth="36.0" styleClass="edit-image-button" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="30.0">
+                                                    <graphic>
+                                                        <FontIcon iconColor="WHITE" iconLiteral="mdi2p-pencil" iconSize="20" wrappingWidth="20.0" />
+                                                    </graphic>
+                                                    <contextMenu>
+                                                        <ContextMenu fx:id="editImageMenu">
+                                                            <items>
+                                                                <MenuItem mnemonicParsing="false" onAction="#handleChooseImage" text="Choose From Files" />
+                                                                <MenuItem mnemonicParsing="false" onAction="#handleRemoveImageAction" text="Remove Image" />
+                                                            </items>
+                                                        </ContextMenu>
+                                                    </contextMenu>
+                                                </Button>
+                                            </children>
+                                        </AnchorPane>
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                        <VBox prefHeight="150.0" prefWidth="552.0" spacing="10.0">
+                            <children>
+                                <HBox prefHeight="50.0" prefWidth="552.0" spacing="10.0">
+                                    <children>
+                                        <Label text="Address:" />
+                                    </children>
+                                </HBox>
+                                <HBox prefHeight="50.0" prefWidth="552.0" spacing="10.0">
+                                    <children>
+                                        <Label text="Street:" />
+                                        <TextField fx:id="editStreetField" prefWidth="200.0" styleClass="edit-contact-text-field" />
+                                    </children>
+                                </HBox>
+                                <HBox prefHeight="50.0" prefWidth="552.0" spacing="10.0">
+                                    <children>
+                                        <Label text="City:" />
+                                        <TextField fx:id="editCityField" prefHeight="25.0" prefWidth="121.0" styleClass="edit-contact-text-field" />
+                                        <Label text="State:" />
+                                        <TextField fx:id="editStateField" prefHeight="25.0" prefWidth="83.0" styleClass="edit-contact-text-field" />
+                                        <Label text="Zip Code:" />
+                                        <TextField fx:id="editZipCodeField" prefHeight="25.0" prefWidth="72.0" styleClass="edit-contact-text-field" />
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                    </children>
+                    <VBox.margin>
+                        <Insets left="20.0" right="20.0" />
+                    </VBox.margin>
+                    <padding>
+                        <Insets top="20.0" />
+                    </padding>
+                </VBox>
+            </children>
+        </VBox>
+    </children>
+</AnchorPane>

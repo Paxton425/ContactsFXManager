@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<contacts>
+    <contact>
+        <id>1</id>
+        <name>John Doe</name>
+        <phone>555-1234</phone>
+        <email>john.doe@example.com</email>
+        <image>51K+mDcmKML._SY450_.jpg</image>
+        <address>
+            <street>123 Main St</street>
+            <city>Anytown</city>
+            <state>CA</state>
+            <zipCode>90210</zipCode>
+        </address>
+    </contact>
+    <contact>
+        <id>2</id>
+        <name>Jane Smith</name>
+        <phone>555-5678</phone>
+        <email>jane.smith@example.com</email>
+        <image>a7a306eae706652a8199c889d6f439e6094acde0_original.jpeg</image>
+        <address>
+            <street>456 Oak Ave</street>
+            <city>Springfield</city>
+            <state>IL</state>
+            <zipCode>62704</zipCode>
+        </address>
+    </contact>
+    <contact>
+        <id>3</id>
+        <name>Alice Johnson</name>
+        <phone>555-9876</phone>
+        <email>alice.johnson@example.com</email>
+        <image></image>
+        <address>
+            <street>789 Pine Ln</street>
+            <city>Riverdale</city>
+            <state>NY</state>
+            <zipCode>10471</zipCode>
+        </address>
+    </contact>
+    <contact>
+        <id>4</id>
+        <name>Bob Williams</name>
+        <phone>555-5432</phone>
+        <email>bob.williams@example.com</email>
+        <address>
+            <street>10 Downing St</street>
+            <city>London</city>
+            <state>ADEG</state>
+            <zipCode>290</zipCode>
+        </address>
+    </contact>
+    <contact>
+        <id>5</id>
+        <name>Eva Davis</name>
+        <phone>555-8765</phone>
+        <email>eva.davis@example.com</email>
+        <image></image>
+        <address>
+            <street>221B Baker Street</street>
+            <city>London</city>
+            <state></state>
+            <zipCode>NW1 6XE</zipCode>
+        </address>
+    </contact>
+    <contact>
+        <id>6</id>
+        <name>Rob Williams</name>
+        <phone>333-2625</phone>
+        <email>rob@email.com</email>
+        <image>a7a306eae706652a8199c889d6f439e6094acde0_original.jpeg</image>
+        <address>
+            <street>1 Infinite Loop</street>
+            <city>Cupertino</city>
+            <state>CA</state>
+            <zipCode>95014</zipCode>
+        </address>
+    </contact>
+    <contact>
+        <id>6</id>
+        <name>Rob Williams</name>
+        <phone>333-2625</phone>
+        <email>rob@email.com</email>
+        <image></image>
+        <address>
+            <street>1 Infinite Loop</street>
+            <city>Cupertino</city>
+            <state>CA</state>
+            <zipCode>95014</zipCode>
+        </address>
+    </contact>
+    <contact>
+        <id>7</id>
+        <name>Keith Robinson</name>
+        <phone>566-7755</phone>
+        <email>keth.robinson@email.com</email>
+        <image></image>
+        <address>
+            <street>The Shire</street>
+            <city>Hobbiton</city>
+            <state></state>
+            <zipCode></zipCode>
+        </address>
+    </contact>
+    <contact>
+        <id>8</id>
+        <name>John Mendel</name>
+        <phone>232-9076</phone>
+        <email>john.mendel@email.com</email>
+        <image></image>
+        <address>
+            <street>Wall Street</street>
+            <city>New York</city>
+            <state>NY</state>
+            <zipCode>10005</zipCode>
+        </address>
+    </contact>
+    <contact>
+        <id>10</id>
+        <name>Peter Griffin</name>
+        <phone>401-555-0111</phone>
+        <email>peter.grifffin@familyguy.com</email>
+        <address>
+            <street>31 Spooner St</street>
+            <city>Quahog</city>
+            <state>RI</state>
+            <zipCode>0287</zipCode>
+        </address>
+    </contact>
+</contacts>

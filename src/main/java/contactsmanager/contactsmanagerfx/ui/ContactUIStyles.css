@@ -1,0 +1,14 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : Dec 20, 2024, 3:07:59 AM
+    Author     : admin
+*/
+
+
+.contact-button{
+    -fx-background-color: '#FFF'; 
+    -fx-border-color: '#D6D6D6';
+}
