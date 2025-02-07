@@ -14,13 +14,13 @@
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #e10e10e10; -fx-border-color: #d6d6d6;" stylesheets="@fxmldialog.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="contactsmanager.contactsmanagerfx.ui.dialog.FXMLEditContactController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #e10e10e10; -fx-border-color: #d6d6d6;" stylesheets="@dialogStyles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="contactsmanager.contactsmanagerfx.ui.dialog.FXMLEditContactController">
     <children>
       <VBox prefHeight="511.0" prefWidth="617.0">
          <children>
-            <AnchorPane>
+            <AnchorPane style="-fx-background-color: ebebeb;">
                <children>
-                  <Label text="Edit Contact" textFill="#2b70a4" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <Label text="Edit Contact" textFill="#168dcd" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <font>
                         <Font name="System Bold" size="30.0" />
                      </font>
@@ -32,12 +32,12 @@
                      <children>
                             <Button fx:id="saveButton" onAction="#handleSaveContactEditAction" prefHeight="58.0" prefWidth="144.0" styleClass="edit-contact-top-menu-button" text="Save Changes">
                            <graphic>
-                              <FontIcon iconColor="#2b70a4" iconLiteral="mdi2f-floppy" iconSize="30" />
+                              <FontIcon iconColor="#3282bc" iconLiteral="mdi2f-floppy" iconSize="30" />
                            </graphic>
                         </Button>
                             <Button fx:id="cancelButton" onAction="#handleDiscardChanges" prefHeight="58.0" prefWidth="156.0" styleClass="edit-contact-top-menu-button" text="Discard Changes">
                            <graphic>
-                              <FontIcon iconColor="#973232" iconLiteral="mdi2f-file-remove" iconSize="30" />
+                              <FontIcon iconColor="#b92727" iconLiteral="mdi2f-file-remove" iconSize="30" />
                            </graphic>
                         </Button>
                         <Separator orientation="VERTICAL" prefHeight="200.0">
@@ -47,7 +47,7 @@
                         </Separator>
                             <Button fx:id="exitButton" onAction="#handleExitWindowAction" prefHeight="58.0" prefWidth="82.0" styleClass="edit-contact-top-menu-button" text="Exit">
                            <graphic>
-                              <FontIcon iconColor="#973232" iconLiteral="mdi2e-exit-to-app" iconSize="30" />
+                              <FontIcon iconColor="#b92727" iconLiteral="mdi2e-exit-to-app" iconSize="30" />
                            </graphic>
                         </Button>
                      </children>
@@ -70,19 +70,19 @@
                                         <HBox prefHeight="50.0" prefWidth="552.0" spacing="10.0">
                                             <children>
                                                 <Label text="Name:" />
-                                                <TextField fx:id="editNameField" onInputMethodTextChanged="#handleInputChanged" prefWidth="200.0" styleClass="edit-contact-text-field" />
+                                                <TextField fx:id="editNameField" onKeyPressed="#handleInputChanged" prefWidth="200.0" styleClass="edit-contact-text-field" />
                                             </children>
                                         </HBox>
                                         <HBox prefHeight="50.0" prefWidth="552.0" spacing="10.0">
                                             <children>
                                                 <Label text="Phone Number:" />
-                                                <TextField fx:id="editNumberField" onInputMethodTextChanged="#handleInputChanged" prefWidth="200.0" styleClass="edit-contact-text-field" />
+                                                <TextField fx:id="editNumberField" onKeyPressed="#handleInputChanged" prefWidth="200.0" styleClass="edit-contact-text-field" />
                                             </children>
                                         </HBox>
                                         <HBox prefHeight="50.0" prefWidth="552.0" spacing="10.0">
                                             <children>
                                                 <Label text="Email:" />
-                                                <TextField fx:id="editEmailField" onInputMethodTextChanged="#handleInputChanged" prefWidth="200.0" styleClass="edit-contact-text-field" />
+                                                <TextField fx:id="editEmailField" onKeyPressed="#handleInputChanged" prefWidth="200.0" styleClass="edit-contact-text-field" />
                                             </children>
                                         </HBox>
                                  </children>
@@ -123,17 +123,17 @@
                               <HBox prefHeight="50.0" prefWidth="552.0" spacing="10.0">
                                   <children>
                                       <Label text="Street:" />
-                                      <TextField fx:id="editStreetField" onInputMethodTextChanged="#handleInputChanged" prefWidth="200.0" styleClass="edit-contact-text-field" />
+                                      <TextField fx:id="editStreetField" onKeyPressed="#handleInputChanged" prefWidth="200.0" styleClass="edit-contact-text-field" />
                                   </children>
                               </HBox>
                               <HBox prefHeight="50.0" prefWidth="552.0" spacing="10.0">
                                   <children>
                                       <Label text="City:" />
-                                      <TextField fx:id="editCityField" onInputMethodTextChanged="#handleInputChanged" prefHeight="25.0" prefWidth="121.0" styleClass="edit-contact-text-field" />
+                                      <TextField fx:id="editCityField" onKeyPressed="#handleInputChanged" prefHeight="25.0" prefWidth="121.0" styleClass="edit-contact-text-field" />
                                       <Label text="State:" />
-                                      <TextField fx:id="editStateField" onInputMethodTextChanged="#handleInputChanged" prefHeight="25.0" prefWidth="83.0" styleClass="edit-contact-text-field" />
+                                      <TextField fx:id="editStateField" onKeyPressed="#handleInputChanged" prefHeight="25.0" prefWidth="83.0" styleClass="edit-contact-text-field" />
                                       <Label text="Zip Code:" />
-                                      <TextField fx:id="editZipCodeField" onInputMethodTextChanged="#handleInputChanged" prefHeight="25.0" prefWidth="72.0" styleClass="edit-contact-text-field" />
+                                      <TextField fx:id="editZipCodeField" onKeyPressed="#handleInputChanged" prefHeight="25.0" prefWidth="72.0" styleClass="edit-contact-text-field" />
                                   </children>
                               </HBox>
                           </children>

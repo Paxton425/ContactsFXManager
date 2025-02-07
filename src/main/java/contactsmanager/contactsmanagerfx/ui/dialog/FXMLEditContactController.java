@@ -15,6 +15,7 @@ import contactsmanager.contactsmanagerfx.contacts.ContactBuilder;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -33,6 +34,8 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.InputMethodEvent;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.ImagePattern;
@@ -91,7 +94,6 @@ public class FXMLEditContactController extends DialogWindow implements Initializ
     private String oldImageName;
     private String imageName;
     private String imagePath;
-    private String rootImagePath = ("C:\\Users\\admin\\IdeaProjects\\ContactsMnagerFX\\src\\main\\resources\\contactsmanager\\contactsmanagerfx\\images\\contactimages\\");
 
     private boolean contactModified = false;
 
@@ -129,7 +131,6 @@ public class FXMLEditContactController extends DialogWindow implements Initializ
                     editCityField.getText().trim(),
                     editStateField.getText().trim(),
                     editZipCodeField.getText().trim());
-            updatedContact = contactBuilder.getContact();
 
             if (imageName != null && imageName != "default.png") {
                 contactBuilder.setImage(imageName);
@@ -137,6 +138,9 @@ public class FXMLEditContactController extends DialogWindow implements Initializ
             } else {
                 contactBuilder.setImage("default.png");
             }
+
+            updatedContact = contactBuilder.getContact();
+
             try{ //Save contact
                 if(updatedContact != null) {
                     onSaveChanges.handle(event);
@@ -157,7 +161,7 @@ public class FXMLEditContactController extends DialogWindow implements Initializ
     }
 
     @FXML
-    private void handleInputChanged(ActionEvent event){
+    private void handleInputChanged(KeyEvent event){
         contactModified=true;
         refreshButton.setDisable(false);
     }
@@ -218,7 +222,7 @@ public class FXMLEditContactController extends DialogWindow implements Initializ
         discardChanges();
     }
 
-    private boolean menuOpenToggle = true;
+    private boolean menuOpenToggle = false;
     private boolean menuOpen(){
         return menuOpenToggle = !menuOpenToggle;
     }
@@ -226,14 +230,14 @@ public class FXMLEditContactController extends DialogWindow implements Initializ
     private void handleImageMenu(ActionEvent event){
         Node anchorNode = (Node) event.getSource();
         if(menuOpen())
-            editImageMenu.show(anchorNode, Side.BOTTOM,anchorNode.getLayoutX(), anchorNode.getLayoutY());
+            editImageMenu.show(anchorNode, Side.BOTTOM, anchorNode.getLayoutX()-50, anchorNode.getLayoutY()-150);
         else
             editImageMenu.hide();
 
     }
 
     @FXML
-    public void handleChooseImage() {
+    public void handleChooseImage(ActionEvent event) {
         Stage stage = (Stage) imageCircle.getScene().getWindow();
         if (stage == null) {
             System.err.println("Stage is null. Cannot open FileChooser.");
@@ -280,9 +284,19 @@ public class FXMLEditContactController extends DialogWindow implements Initializ
     private void handleRemoveImageAction(){}
         
     private void setImage(String image){
-        File currImagePath = new File(rootImagePath+image);
-        Image currImage = new Image(currImagePath.toURI().toString());
-        imageCircle.setFill(new ImagePattern(currImage));
+        URL currImageURL;
+        if(image.isEmpty())
+            currImageURL = getImageURL("default.png");
+        else
+            currImageURL = getImageURL(image);
+        try {
+            Image currImage = new Image(currImageURL.toURI().toString());
+            imageCircle.setFill(new ImagePattern(currImage));
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
     
     public static boolean isOnlyDigits(String str) 
@@ -323,31 +337,35 @@ public class FXMLEditContactController extends DialogWindow implements Initializ
             return false;
         }
     }
-    
-    private void deleteImage(String targetImage) {
-        if (targetImage != null && !targetImage.isEmpty()) {
-            try {
-                Path path = Paths.get(rootImagePath+targetImage);
-                if (Files.exists(path)) {
-                    Files.delete(path);
-                    System.out.println("Image deleted: " + imagePath);
-                } else {
-                    System.out.println("Image not found: " + imagePath);
-                }
-            } catch (IOException e) {
-                System.err.println("Error deleting image: " + e.getMessage());
-                // Consider more robust error handling, like displaying an alert to the user
-                e.printStackTrace(); // For debugging
-        }
-        } else {
-             System.out.println("No image path provided for deletion.");
+
+    private URL getImageURL(String image) {
+        try {
+            // Get the path to the class file
+            URL classUrl = getClass().getResource(getClass().getSimpleName() + ".class");
+            Path classPath = Paths.get(classUrl.toURI());
+
+            // Get the path to the project's base directory
+            Path projectBasePath = classPath.getParent().getParent().getParent();
+
+            // Construct the full path to the file
+            Path contactsImagesPath = projectBasePath.resolve("images").resolve("contactImages").resolve(image);
+
+            // Attempt to open the file
+            return contactsImagesPath.toUri().toURL();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
-    
     private void copyImage(String sourcePath){
+        System.out.println(sourcePath);
         try {
+            URL class_URL = getClass().getResource(getClass().getSimpleName()+".class");
+            Path classPath = Paths.get(class_URL.toURI());
+
             Path source = Paths.get(sourcePath);
-            Path destinationDir = Paths.get(rootImagePath);
+            Path destinationDir = classPath.getParent().getParent().getParent().resolve("images").resolve("contactImages");
 
             // Extract the filename from the source path
             String fileName = source.getFileName().toString();
@@ -363,8 +381,35 @@ public class FXMLEditContactController extends DialogWindow implements Initializ
         } catch (IOException e) {
             System.err.println("Error copying image: " + e.getMessage());
             e.printStackTrace();
+        } catch (URISyntaxException e) {
+            System.err.println("Invalid URI: " + e.getMessage());
+            e.printStackTrace();
         }
     }
+    
+    private void deleteImage(String targetImage) {
+        if (targetImage != null && !targetImage.isEmpty()) {
+            try {
+                URL image_URL = getImageURL(targetImage);
+                Path path = Paths.get(image_URL.toURI());
+                if (Files.exists(path)) {
+                    Files.delete(path);
+                    System.out.println("Image deleted: " + imagePath);
+                } else {
+                    System.out.println("Image not found: " + imagePath);
+                }
+            } catch (IOException e) {
+                System.err.println("Error deleting image: ");
+                throw new RuntimeException(e);
+            } catch (URISyntaxException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+             System.out.println("No image path provided for deletion.");
+        }
+    }
+    
+
      
     @Override
     public void initialize(URL location, ResourceBundle resources) {

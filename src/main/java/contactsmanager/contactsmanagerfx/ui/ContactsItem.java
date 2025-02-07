@@ -9,6 +9,13 @@ import contactsmanager.contactsmanagerfx.contacts.Contact;
 import contactsmanager.contactsmanagerfx.ui.dialog.Alerts;
 import contactsmanager.contactsmanagerfx.contacts.ContactsManager.ViewBy;
 import java.io.File;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -47,7 +54,26 @@ public class ContactsItem {
         return menuOpenToggle = !menuOpenToggle;
     }
 
-    private String contactImagesRootPath = ("C:\\Users\\admin\\IdeaProjects\\ContactsMnagerFX\\src\\main\\resources\\contactsmanager\\contactsmanagerfx\\images\\contactimages\\");
+    public URL getImageURL(String file) {
+        try {
+            // Get the path to the class file
+            URL classUrl = getClass().getResource(getClass().getSimpleName() + ".class");
+            Path classPath = Paths.get(classUrl.toURI());
+
+            // Get the path to the project's base directory
+            Path projectBasePath = classPath.getParent().getParent();
+
+            // Construct the full path to the file
+            Path filePath = projectBasePath.resolve("images").resolve(file);
+
+            // Attempt to open the file
+            return filePath.toUri().toURL();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     //Handlers
     private EventHandler<MouseEvent> onClickContact;
@@ -101,8 +127,13 @@ public class ContactsItem {
         contactButton.setPrefHeight(50);
         contactButton.setMinHeight(45);
         contactButton.setPadding(new Insets(0, 0, 0, 50));
-        
-        Image image = new Image(new File("C:\\Users\\admin\\IdeaProjects\\ContactsMnagerFX\\src\\main\\resources\\contactsmanager\\contactsmanagerfx\\images\\icons\\3dots-v.png").toURI().toString());
+
+        Image image = null;
+        try {
+            image = new Image(getImageURL("icons/3dots-v.png").toURI().toString());
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
         ImageView imageView = new ImageView(image);
         imageView.setFitHeight(25);
         imageView.setFitWidth(25);
@@ -156,7 +187,10 @@ public class ContactsItem {
             if(e.getButton() == MouseButton.PRIMARY){ //Open Contact Dialog on left click
                 onClickContact.handle(e);
             } else {
-                trigger.fire(); //open menu on right click
+                //open menu on right click
+                contactMenu.show(contactButton, Side.BOTTOM,
+                        (contactButton.widthProperty().get()/2)+contactButton.getLayoutX(),
+                        contactButton.getLayoutY());
             }
         });
 
@@ -172,7 +206,7 @@ public class ContactsItem {
     private Image getItemImage(String imageName) {
         try {
             if (imageName != null && !imageName.isEmpty()) { 
-                File path = new File(contactImagesRootPath + imageName);
+                URL path = getImageURL("contactImages/"+imageName);
                 return new Image(path.toURI().toString());
             }
         } catch (Exception e) {
@@ -180,6 +214,6 @@ public class ContactsItem {
         }
 
         // Default image logic 
-        return new Image(new File(contactImagesRootPath+"default.png").toURI().toString());
+        return new Image(getImageURL("contactImages/default.png").toString());
     }
 }

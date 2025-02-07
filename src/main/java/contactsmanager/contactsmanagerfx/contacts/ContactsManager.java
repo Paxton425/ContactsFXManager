@@ -6,6 +6,12 @@ package contactsmanager.contactsmanagerfx.contacts;
  */
 
 
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -29,9 +35,8 @@ public class ContactsManager {
     private SortBy sortBy = SortBy.NAME;  //Default Sort By Value
     
     private static ContactsManager manager;
-    private ContactsManager(){
-        //Private to Prevenet instantiatiion
-        this.contactsList = loadContactsArray();
+    private ContactsManager(){//Private to Prevenet instantiatiion
+        this.contactsList = loadContactsFromFile().getContactList();
         this.favourites = new ArrayList<>();
         this.recent = new ArrayList<>();
     }
@@ -41,71 +46,43 @@ public class ContactsManager {
             manager = new ContactsManager();
         return manager;
     }
-    
-    
-    private String path = ("C:\\Users\\admin\\IdeaProjects\\ContactsMnagerFX\\src\\main\\resources\\contactsmanager\\contactsmanagerfx\\contactsdata\\SavedContactsList.xml");
-    File CONTACTS_FILE = new File(path);
- 
-    private ArrayList<Contact> loadContactsArray(){
-        ArrayList<Contact> contactsLoad = new ArrayList<>();
-        try {
-            if (!CONTACTS_FILE.exists()) {
-                return new ArrayList<>();
-            }
 
-            JAXBContext jaxbContext = JAXBContext.newInstance(Contacts.class);
-            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-            Contacts contacts = loadContactsFromFile(CONTACTS_FILE);
-            return contacts.getContactList();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ArrayList<>();
-        }
-    }
+    private String path = ("contactsdata/SavedContactsList.xml");
+
     public void reload(){
-        this.contactsList = loadContactsArray();
+        this.contactsList = loadContactsFromFile().getContactList();
     }
     
     public void updateContact(Contact updatedContact) throws Exception {
-        Contacts contacts = loadContactsFromFile(CONTACTS_FILE); // Use helper function
+        Contacts contacts = loadContactsFromFile(); // Use helper function
 
         ArrayList<Contact> contactList = contacts.getContactList();
         int indexToUpdate = findContactIndex(contactList, updatedContact.Id); // Use helper function
 
         if (indexToUpdate != -1) {
             contactList.set(indexToUpdate, updatedContact);
-            saveContactsToFile(contacts, CONTACTS_FILE); // Use helper function
+            saveContactsToFile(contacts); // Use helper function
         } else {
             throw new Exception("Contact with ID " + updatedContact.Id + " not found!");
         }
     }
 
     public void deleteContact(int contactId) throws Exception {
-        Contacts contacts = loadContactsFromFile(CONTACTS_FILE);
+        Contacts contacts = loadContactsFromFile();
 
         ArrayList<Contact> contactList = contacts.getContactList();
         int indexToRemove = findContactIndex(contactList, contactId);
 
         if (indexToRemove != -1) {
             contactList.remove(indexToRemove);
-            saveContactsToFile(contacts, CONTACTS_FILE);
+            saveContactsToFile(contacts);
         } else {
             throw new Exception("Contact with ID " + contactId + " not found!");
         }
     }
     
     public void addContact(Contact newContact) throws Exception {
-        JAXBContext jaxbContext = JAXBContext.newInstance(Contacts.class);
-        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-
-        Contacts contacts;
-        if (CONTACTS_FILE.exists()) {
-            contacts = (Contacts) unmarshaller.unmarshal(CONTACTS_FILE);
-        } else {
-            contacts = new Contacts(); // Create new Contacts if file doesn't exist
-        }
-
-
+        Contacts contacts = loadContactsFromFile();
         contactsList = contacts.getContactList();
         if (contactsList == null) {
             contactsList = new ArrayList<>(); // Ensure contactList is initialized
@@ -116,22 +93,77 @@ public class ContactsManager {
             newContact.Id = contactsList.size()+1;
 
         contactsList.add(newContact); // Add the new contact
-
-        Marshaller marshaller = jaxbContext.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        marshaller.marshal(contacts, CONTACTS_FILE);
+        saveContactsToFile(contacts); //Save Contact
     }
     
-    private Contacts loadContactsFromFile(File file) throws Exception,JAXBException  {
-        JAXBContext jaxbContext = JAXBContext.newInstance(Contacts.class);
-        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+    private Contacts loadContactsFromFile() {
+        try(InputStream FILE_INPUT_STREAM = getClass().getResourceAsStream(path)) {
+            JAXBContext jaxbContext = JAXBContext.newInstance(Contacts.class);
+            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
-        if (file.exists()) {
-            return (Contacts) unmarshaller.unmarshal(file);
-        } else {
-            return new Contacts();
+            if (FILE_INPUT_STREAM.available() > 0) {
+                return (Contacts) unmarshaller.unmarshal(FILE_INPUT_STREAM);
+            } else {
+                return new Contacts();
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
+    
+    private void saveContactsToFile(Contacts contacts) {
+        URL fileUrl = getClass().getResource(path);
+        try(OutputStream FILE_OUTPUT_STREAM = Files.newOutputStream(Paths.get(fileUrl.toURI()))) {
+            JAXBContext jaxbContext = JAXBContext.newInstance(Contacts.class);
+            Marshaller marshaller = jaxbContext.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            marshaller.marshal(contacts, FILE_OUTPUT_STREAM);
+        }
+        catch(Exception e){
+            System.err.println("Error while saving xml updates to file\n"+e.getMessage());
+        }
+    }
+    
+    public void sortBy(SortBy category){
+        this.sortBy = category;
+        ContactBuilder.sortContacts(contactsList, category);  //Re-sort arraylist 
+    }
+    public SortBy getSortBy(){
+        return this.sortBy;
+    }
+    public void viewBy(ViewBy viewBy){
+        this.viewBy = viewBy;
+    }
+    public ViewBy getViewBy(){
+        return this.viewBy;
+    }
+
+    public void addToFavourites(Contact contact){
+        favourites.add(contact);
+    }
+    public void removeFromFavourites(Contact contact) { favourites.remove(contact);}
+    public ArrayList<Contact> getFavouriteContacts(){
+        return favourites;
+    }
+
+    public void addToRecent(Contact contact){
+        boolean alreadyExists = false;
+        for(Contact c : recent)
+            if(c == contact) alreadyExists = true;
+
+        if(!alreadyExists) {
+            if(recent.size() >= 10)
+                recent.remove(0);
+            recent.add(contact);
+        }
+    }
+    public ArrayList<Contact> getRecentContacts(){
+        if(recent != null){
+            return recent;
+        }
+        return null;
+    }
+
     public int findContactIndex(ArrayList<Contact> contactList, int contactId) {
         if (contactList == null) {
             return -1;
@@ -150,35 +182,7 @@ public class ContactsManager {
                 if(Id == c.Id) return c;
         return null;
     }
-    
-    private void saveContactsToFile(Contacts contacts, File file) throws Exception {
-        JAXBContext jaxbContext = JAXBContext.newInstance(Contacts.class);
-        Marshaller marshaller = jaxbContext.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        marshaller.marshal(contacts, file);
-    }
-    
-    void AddFavourite(Contact contact){
-        favourites.add(contact);
-    }
-    void AddRecent(Contact contact){
-        recent.add(contact);
-    }
-    
-    public void sortBy(SortBy category){
-        this.sortBy = category;
-        ContactBuilder.sortContacts(contactsList, category);  //Re-sort arraylist 
-    }
-    public SortBy getSortBy(){
-        return this.sortBy;
-    }
-    public void viewBy(ViewBy viewBy){
-        this.viewBy = viewBy;
-    }
-    public ViewBy getViewBy(){
-        return this.viewBy;
-    }
-    
+
     public ArrayList<Contact> getContacts()
     {
         if(contactsList != null){
@@ -187,27 +191,8 @@ public class ContactsManager {
         return null;
     }
     public int getContactsCount(){
-        return contactsList.size();
-    }
-    
-    public void addToFavourites(Contact contact){
-        favourites.add(contact);
-    }
-    public void removeFromFavourites(Contact contact) { favourites.remove(contact);}
-
-    public ArrayList<Contact> getFavouriteContacts(){
-        if(favourites != null){
-            return favourites;
-        }
-        return null;
-    }
-    public void addToRecent(Contact contact){
-        recent.add(contact);
-    }
-    public ArrayList<Contact> getRecentContacts(){
-        if(recent != null){
-            return recent;
-        }
-        return null;
+        if(contactsList != null)
+            return contactsList.size();
+        return 0;
     }
 }

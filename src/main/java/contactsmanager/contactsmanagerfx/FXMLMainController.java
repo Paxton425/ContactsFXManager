@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.function.Supplier;
 
 import contactsmanager.contactsmanagerfx.ui.ContactsItem;
 import contactsmanager.contactsmanagerfx.ui.dialog.AddContactFXMLController;
@@ -85,16 +86,29 @@ public class FXMLMainController extends ContactInformationController implements 
 
     private ContactsManager contactsManager;
     private ArrayList<Contact> contacts;
+    private Contact clickedContact;
     private boolean isViewByOpen = false;
     private Runnable reloadAction;
     protected Application application;
 
     private SplitPane.Divider divider1;
-    private final double d1closed = 0.0814, d1open = 0.259; //Closed and Open Split Pane Divider positions
+    private double d1closed = 0.0814, d1open = 0.259; //Closed and Open Split Pane Divider positions
     private SplitPane.Divider divider2;
-    private final double d2closed = 0.9986, d2open = 0.6575; //Closed and Open Split Pane Divider positions
+    private final double d2closed = 0.9986, d2open = 0.4173; //Closed and Open Split Pane Divider positions
 
     private Alerts alerts = new Alerts();
+
+    @FXML
+    private void handleSearchTextChange(KeyEvent event){
+        String searchInput = ((TextField) event.getSource()).getText().trim();
+        if((searchInput).matches(""))
+            loadContacts(contacts);
+        else
+        {
+            ArrayList<Contact> matchedContacts = filterSearchContact(searchInput);
+            loadContacts(matchedContacts);
+        }
+    }
 
     @FXML
     private void handleAboutAction(ActionEvent event){
@@ -165,18 +179,12 @@ public class FXMLMainController extends ContactInformationController implements 
     @FXML
     private void handleViewFavouritesAction(ActionEvent event){
         ArrayList<Contact> favourites = contactsManager.getFavouriteContacts();
-        loadContacts(favourites);
-        
-        Label stateLabel =  getStateMessage("Favourites");
-        contactsListVBox.getChildren().add(0, stateLabel);
+        loadContacts(favourites, "Favourites");
     }
     @FXML
     private void handleViewRecentAction(ActionEvent event){
         ArrayList<Contact> recent = contactsManager.getRecentContacts();
-        loadContacts(recent);
-        
-        Label stateLabel = getStateMessage("Recent");
-        contactsListVBox.getChildren().add(0, stateLabel);
+        loadContacts(recent, "Recent");
     }
     
 
@@ -210,20 +218,32 @@ public class FXMLMainController extends ContactInformationController implements 
 
     @FXML
     private void handleToggleNavBarAction(){
-        closeContactInformation();
         toggleNav(Direction.AUTO);
     }
 
-    enum Direction {CLOSE, OPEN, AUTO};
-    void toggleNav(Direction direction){
-        double current = divider1.positionProperty().get();
+    private enum Direction {CLOSE, OPEN, AUTO};
+    private void toggleNav(Direction direction){
+        double current = divider1.getPosition();
         double target;
 
-        if(Direction.AUTO == direction) {
-            if (Math.abs(current - d1closed) > Math.abs(current - d1open))
-                target = d1closed;
-            else target = d1open;
-        } else target = (direction == Direction.OPEN)? d1open : d1closed;
+        Supplier<Double> openSupplier = () -> {
+            closeContactInformation();
+            return d1open;
+        };
+
+        switch (direction) {
+            case AUTO: target = (Math.abs(current - d1closed) > Math.abs(current - d1open)) ?
+                    d1closed
+                        :
+                    openSupplier.get();
+                break;
+            case OPEN: target = openSupplier.get();
+                break;
+            case CLOSE: target = d1closed;
+                break;
+            default: target = d1closed;
+                break;
+        }
 
         if(current != target){
             Timeline timeline = new Timeline();
@@ -251,6 +271,10 @@ public class FXMLMainController extends ContactInformationController implements 
         toggleContactInformation(Direction.CLOSE);
     }
 
+    @Override
+    public Application getApplication() {
+        return this.application;
+    }
     public void setApplication(Application application) {
         this.application = application;
     }
@@ -260,15 +284,15 @@ public class FXMLMainController extends ContactInformationController implements 
         try{
             FXMLLoader loader = new FXMLLoader(getClass().getResource("ui/dialog/FXMLAddContactView.fxml"));
 
-            WindowControl windowControll = new WindowControl();
-            windowControll.createWindow(loader);
+            WindowControl windowControl = new WindowControl();
+            windowControl.createWindow(loader);
 
             //Access the controller to perfom futher actions
-            AddContactFXMLController addContactController = (AddContactFXMLController)windowControll.getController();
+            AddContactFXMLController addContactController = (AddContactFXMLController)windowControl.getController();
             addContactController.setContactsManager(contactsManager);
 
-            windowControll.setFocusBlur(rootAchorPane);
-            windowControll.showWindow(StageStyle.UNDECORATED, Modality.APPLICATION_MODAL);
+            windowControl.setFocusBlur(rootAchorPane);
+            windowControl.showWindow(StageStyle.UNDECORATED, Modality.APPLICATION_MODAL);
 
             addContactController.setOnSaveButtonClick(e -> {
                 // Perform actions in the main window when the Save button is clicked
@@ -349,19 +373,45 @@ public class FXMLMainController extends ContactInformationController implements 
         } else alerts.showErrorAlert("Contact is null");
     }
 
-    public void loadContacts(ArrayList<Contact> contacts){
+    public void loadContacts(ArrayList<Contact> contacts, String... stateMessages){
         try
         {
-            if(contacts != null){
-                contactsListVBox.getChildren().clear();
+            int vBoxIndex = 0;
+            contactsListVBox.getChildren().clear();
+
+            if(stateMessages.length > 0)
+                for(String stateMessage : stateMessages) {
+                    contactsListVBox.getChildren().add(vBoxIndex, getStateMessage(stateMessage));
+                    vBoxIndex++;
+                }
+
+            if(contacts.size() == 0) {
+                contactsListVBox.getChildren().add(vBoxIndex, getStateMessage("0 contacts found"));
+                vBoxIndex++;
+            }
+            else {
                 for(int i=0; i<contacts.size(); i++)
                 {
                     ContactsItem item = new ContactsItem(contactsListVBox, contacts.get(i));
                     item.setOnClickContact((event->{
-                        setRequestedContactInfo(item.getContact());
-                        toggleNav(Direction.CLOSE); //Close nav Bar
-                        toggleContactInformation(Direction.OPEN); //Open Contact Info
-                        System.out.println(divider1.getPosition());
+                        if(clickedContact != null) {
+                            if (item.getContact() == clickedContact) {
+                                clickedContact = null;
+                                closeContactInformation();
+                            }
+                            else {
+                                clickedContact = item.getContact();
+                                setRequestedContactInfo(clickedContact);
+                                toggleNav(Direction.CLOSE); //Close nav Bar
+                                toggleContactInformation(Direction.OPEN); //Open Contact Info
+                            }
+                        }else {
+                            clickedContact = item.getContact();
+                            setRequestedContactInfo(clickedContact);
+                            toggleNav(Direction.CLOSE); //Close nav Bar
+                            toggleContactInformation(Direction.OPEN); //Open Contact Info
+                        }
+                        contactsManager.addToRecent(clickedContact);
                     }));
                     item.setOnRequestDelete(event -> {
                         deleteContact(item.getContact());
@@ -379,15 +429,17 @@ public class FXMLMainController extends ContactInformationController implements 
 
                     contactsListVBox
                             .getChildren()
-                            .add(i, item.getContactItem(contactsManager.getViewBy()));
+                            .add(vBoxIndex, item.getContactItem(contactsManager.getViewBy()));
+                    vBoxIndex++;
                 }
             }
-            else if(contactsManager.getContactsCount() == 0)
-            {
-                Label state = getStateMessage("0 contacts found");
-                contactsListVBox.getChildren().add(state);
-            }
-        } catch(Exception e)
+
+        }
+        catch (NullPointerException e){
+            alerts.showErrorAlert("Something went wrong while loading contacts!");
+            System.err.println("Provided contact is null\n"+e.getMessage());
+        }
+        catch(Exception e)
         {
             alerts.showErrorAlert("Something went wrong while loading contacts!");
             e.printStackTrace();
@@ -410,7 +462,7 @@ public class FXMLMainController extends ContactInformationController implements 
         {
             try {
                 if(contacts.get(i).Name == null) 
-                    break;
+                    continue;
                 else if(findSubstring(contacts.get(i).Name.toLowerCase(), input.toLowerCase()) > -1) {
                     matches.add(contacts.get(i)); 
                 }
@@ -443,6 +495,7 @@ public class FXMLMainController extends ContactInformationController implements 
 
     private Label getStateMessage(String message){
         Label messageLabel = new Label(message);
+        messageLabel.setStyle("-fx-font-size: 16; -fx-fill: derive(black, 80%); -fx-font-weight: bold;");
         return messageLabel;
     }
     
@@ -464,29 +517,32 @@ public class FXMLMainController extends ContactInformationController implements 
     public void initialize(URL url, ResourceBundle rb) {
         contactsListAnchorPane.prefHeightProperty().bind(mainSplitPain.heightProperty());
 
-
         //Evaluate Split Pane Divider Fields
         divider1 = mainSplitPain.getDividers().get(0);
         divider2 = mainSplitPain.getDividers().get(1);
-        divider1.positionProperty().set(d1closed); //Initially close
+
+        //Initially close Both Panels
+        divider1.positionProperty().set(d1closed);
+        divider2.positionProperty().set(d2closed);
+
+        rootAchorPane.widthProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                //Persistently close as window changes its size
+                closeContactInformation();
+
+                //Change didvider positions relative the window width
+                d1closed = Math.abs(61.152/((double)newValue)); // y = |k/x| : inverse rlationship
+                d1open = Math.abs(194/((double)newValue)); // y = |k/x| : inverse rlationship
+                System.out.println("nv "+newValue);
+            }
+        });
 
         //Initialize Constructors
         contactsManager = ContactsManager.getInstance();
         contacts = contactsManager.getContacts();
-
-        applyAccelerators(); //Shortcut Keys
-
         loadContacts(contacts);
 
-        contactSearchBox.textProperty().addListener(new ChangeListener<String>(){
-            
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue){
-                if(!(newValue.trim()).matches("")){
-                    ArrayList<Contact> clist = filterSearchContact(newValue.trim());
-                    loadContacts(contacts);
-                } 
-            }
-        });
+        applyAccelerators(); //Shortcut Keys
     }   
 }

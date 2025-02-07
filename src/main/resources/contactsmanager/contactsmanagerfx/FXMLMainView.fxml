@@ -53,12 +53,12 @@
                   </Button>
                     <Label text="Contacts" textFill="#139cf7">
                       <font>
-                        <Font name="Corbel Bold" size="23.0" />
+                        <Font name="Corbel Bold" size="30.0" />
                       </font>
                     </Label>
                   <StackPane alignment="CENTER_LEFT">
                      <children>
-                          <TextField fx:id="contactSearchBox" accessibleHelp="Search" prefHeight="25.0" prefWidth="160.0" promptText="Search Contact" style="-fx-background-color: transparent; -fx-border-color: #d6d6d6; -fx-border-radius: 20;">
+                          <TextField fx:id="contactSearchBox" onKeyTyped="#handleSearchTextChange" accessibleHelp="Search" prefHeight="25.0" prefWidth="160.0" promptText="Search Contact" style="-fx-background-color: transparent; -fx-border-color: #d6d6d6; -fx-border-radius: 20;">
                            <font>
                               <Font name="Corbel" size="16.0" />
                            </font>
@@ -90,7 +90,7 @@
                         <MenuItem fx:id="sortByEmailMenu" mnemonicParsing="false" onAction="#handleSortByEmail" text="Email" />
                     </items>
                      <graphic>
-                        <FontIcon iconColor="#979797" iconLiteral="mdi2s-sort-alphabetical-ascending" iconSize="20" />
+                        <FontIcon iconColor="#45b4f8" iconLiteral="mdi2s-sort-alphabetical-ascending" iconSize="20" />
                      </graphic>
                   </MenuButton>
                   <MenuButton mnemonicParsing="false" prefHeight="33.0" prefWidth="103.0" styleClass="topmenu-button" text="View By">
@@ -99,14 +99,14 @@
                       <MenuItem mnemonicParsing="false" onAction="#handleViewByName" text="View By Name" />
                     </items>
                      <graphic>
-                        <FontIcon iconColor="#979797" iconLiteral="mdi2v-view-split-vertical" iconSize="25" />
+                        <FontIcon iconColor="#53afdd" iconLiteral="mdi2v-view-split-vertical" iconSize="25" />
                      </graphic>
                   </MenuButton>
                </children>
             </HBox>
-            <MenuBar layoutX="350.0" layoutY="10.0" prefWidth="132.0" style="-fx-background-color: 0;" AnchorPane.bottomAnchor="6.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0">
+            <MenuBar layoutX="350.0" layoutY="10.0" prefHeight="36.0" prefWidth="132.0" style="-fx-background-color: 0;" AnchorPane.bottomAnchor="-2.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0">
               <menus>
-                <Menu mnemonicParsing="false" style="-fx-: green;" text="File">
+                <Menu mnemonicParsing="false" text="File">
                   <items>
                         <MenuItem mnemonicParsing="false" text="Import Contact" />
                         <SeparatorMenuItem mnemonicParsing="false" />
@@ -134,7 +134,7 @@
             </MenuBar>
          </children>
       </AnchorPane>
-      <SplitPane fx:id="mainSplitPain" dividerPositions="0.08005249343832022, 0.9986876640419947" layoutY="44.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="429.0" prefWidth="764.0" styleClass="main-split-pane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="45.0">
+      <SplitPane fx:id="mainSplitPain" dividerPositions="0.08005249343832022, 0.9986876640419947" layoutY="44.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="431.0" prefWidth="445.0" styleClass="main-split-pane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="45.0">
          <items>
             <VBox fx:id="sideBarVBox" maxWidth="193.0" minHeight="-Infinity" minWidth="60.0" prefHeight="439.0" prefWidth="60.0" styleClass="menuVBox" SplitPane.resizableWithParent="false">
                <children>
@@ -212,13 +212,13 @@
                   </Button>
                </children>
             </VBox>
-            <AnchorPane fx:id="contactsAnchorPane" minHeight="-Infinity" minWidth="432.0" style="-fx-border-width: 0;">
+            <AnchorPane fx:id="contactsAnchorPane" minHeight="-Infinity" minWidth="255.0" style="-fx-border-width: 0;">
                <children>
                   <ScrollPane fx:id="contactsScrollPane" fitToWidth="true" hbarPolicy="NEVER" prefHeight="36.0" prefWidth="692.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <content>
                         <AnchorPane fx:id="contactsListAnchorPane" style="-fx-background-color: #e1e1e1;">
                            <children>
-                              <VBox fx:id="contactsListVBox" alignment="TOP_CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="430.0" prefWidth="686.0" style="-fx-padding: 10;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <VBox fx:id="contactsListVBox" alignment="TOP_CENTER" maxWidth="-Infinity" prefHeight="430.0" prefWidth="686.0" style="-fx-padding: 10;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <padding>
                                     <Insets left="5.0" right="5.0" top="5.0" />
                                  </padding>
@@ -229,62 +229,18 @@
                   </ScrollPane>
                </children>
             </AnchorPane>
-            <AnchorPane maxWidth="260.0" minWidth="0.0">
+            <AnchorPane minWidth="0.0">
                <children>
-                  <VBox prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
                         <HBox alignment="CENTER_LEFT" minHeight="95.0" prefHeight="96.0" prefWidth="307.0" spacing="5.0">
                            <children>
-                              <Circle fx:id="contactPictureCircle" fill="#c4c9cd" radius="40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
-                              <Label fx:id="nameInfo" text="John Conner" HBox.hgrow="NEVER">
+                              <Circle fx:id="contactPictureCircle" fill="#c4c9cd" radius="43.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+                              <Label fx:id="nameInfo" text="John Conner" textFill="#007fb5" HBox.hgrow="NEVER">
                                  <font>
-                                    <Font size="16.0" />
+                                    <Font size="30.0" />
                                  </font>
                               </Label>
-                           </children>
-                           <padding>
-                              <Insets left="5.0" />
-                           </padding>
-                        </HBox>
-                        <Line endX="84.0" startX="-100.0" stroke="#bcb7b7">
-                           <VBox.margin>
-                              <Insets left="60.0" />
-                           </VBox.margin>
-                        </Line>
-                        <HBox alignment="CENTER" minHeight="45.0" prefHeight="46.0" prefWidth="207.0" spacing="5.0">
-                           <children>
-                              <Button fx:id="contactInfoEmailButton" mnemonicParsing="false" onAction="#handleEmailAction" prefHeight="35.0" prefWidth="76.0" text="Email">
-                                 <graphic>
-                                    <ImageView fitHeight="25.0" fitWidth="33.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@images/icons/icons8-send-email-96.png" />
-                                       </image>
-                                    </ImageView>
-                                 </graphic>
-                                 <tooltip>
-                                    <Tooltip text="Send Email" />
-                                 </tooltip>
-                                 <styleClass>
-                                    <String fx:value="email-button" />
-                                    <String fx:value="contact-info-button" />
-                                 </styleClass>
-                              </Button>
-                              <Button fx:id="InfoDeleteContactButton" mnemonicParsing="false" onAction="#handleDeleteContactAction" prefHeight="35.0" prefWidth="34.0">
-                                 <graphic>
-                                    <ImageView fitHeight="26.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@images/icons/icons8-delete-48.png" />
-                                       </image>
-                                    </ImageView>
-                                 </graphic>
-                                 <tooltip>
-                                    <Tooltip text="Delete Contact" />
-                                 </tooltip>
-                                 <styleClass>
-                                    <String fx:value="delete-contact-button" />
-                                    <String fx:value="contact-info-button" />
-                                 </styleClass>
-                              </Button>
                               <Button fx:id="InfoEditContactButton" mnemonicParsing="false" onAction="#handleEditContactAction" prefHeight="30.0" prefWidth="52.0">
                                  <graphic>
                                     <ImageView fitHeight="22.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
@@ -302,40 +258,74 @@
                                  </styleClass>
                               </Button>
                            </children>
+                           <padding>
+                              <Insets left="5.0" />
+                           </padding>
                         </HBox>
-                        <AnchorPane maxHeight="119.0" minWidth="-Infinity" prefHeight="100.0" prefWidth="307.0" VBox.vgrow="ALWAYS">
+                        <Line endX="230.2928924560547" endY="-0.20710676908493042" startX="-100.0" stroke="#bcb7b7">
+                           <VBox.margin>
+                              <Insets left="60.0" />
+                           </VBox.margin>
+                        </Line>
+                        <HBox alignment="CENTER_LEFT" minHeight="45.0" prefHeight="46.0" prefWidth="207.0" spacing="5.0" VBox.vgrow="NEVER">
                            <children>
-                              <TitledPane animated="false" layoutX="14.0" layoutY="-15.0" prefHeight="188.0" prefWidth="202.0" styleClass="contact-info-title-pane" text="Contact Information" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <Button fx:id="contactInfoEmailButton" mnemonicParsing="false" onAction="#handleEmailAction" prefHeight="35.0" prefWidth="114.0" text="TO EMAIL">
+                                 <graphic>
+                                    <ImageView fitHeight="25.0" fitWidth="33.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@images/icons/icons8-send-email-96.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <tooltip>
+                                    <Tooltip text="Send Email" />
+                                 </tooltip>
+                                 <styleClass>
+                                    <String fx:value="email-button" />
+                                    <String fx:value="contact-info-button" />
+                                 </styleClass>
+                              </Button>
+                           </children>
+                           <padding>
+                              <Insets left="60.0" />
+                           </padding>
+                        </HBox>
+                        <AnchorPane maxHeight="158.0" minWidth="-Infinity" prefHeight="158.0" prefWidth="405.0" VBox.vgrow="ALWAYS">
+                           <children>
+                              <TitledPane animated="false" layoutX="14.0" layoutY="-15.0" prefHeight="94.0" prefWidth="405.0" styleClass="contact-info-title-pane" text="Contact Information" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                 <content>
                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="297.0" prefWidth="200.0">
                                        <children>
-                                          <VBox layoutX="20.0" layoutY="20.0" AnchorPane.bottomAnchor="27.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
+                                          <VBox layoutX="30.0" layoutY="30.0" prefHeight="20.0" prefWidth="345.0" AnchorPane.bottomAnchor="34.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0">
                                              <children>
-                                                <HBox prefHeight="46.0" prefWidth="285.0" spacing="5.0">
+                                                <HBox prefHeight="33.0" prefWidth="375.0" spacing="5.0">
                                                    <children>
-                                                      <Label text="Phone">
+                                                      <Label prefHeight="21.0" prefWidth="66.0" text="Phone:">
                                                          <font>
                                                             <Font size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <Label fx:id="phoneInfo" text="12624-12817-12816">
+                                                      <Label fx:id="phoneInfo" prefHeight="21.0" prefWidth="233.0" text="12624-12817-12816">
                                                          <font>
                                                             <Font size="15.0" />
                                                          </font>
                                                       </Label>
                                                    </children>
                                                 </HBox>
-                                                <HBox prefHeight="46.0" prefWidth="285.0" spacing="5.0">
+                                                <HBox prefHeight="29.0" prefWidth="334.0" spacing="5.0">
                                                    <children>
-                                                      <Label prefHeight="30.0" prefWidth="36.0" text="Email">
+                                                      <Label prefHeight="23.0" prefWidth="66.0" text="Email:">
                                                          <font>
                                                             <Font size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <Hyperlink fx:id="emailInfo" onAction="#handleEmailAction" prefHeight="20.0" prefWidth="148.0" text="example@email.com">
+                                                      <Hyperlink fx:id="emailInfo" onAction="#handleEmailAction" prefHeight="37.0" prefWidth="278.0" text="example@email.com">
                                                          <font>
                                                             <Font size="15.0" />
                                                          </font>
+                                                         <padding>
+                                                            <Insets left="-1.0" />
+                                                         </padding>
                                                       </Hyperlink>
                                                    </children>
                                                    <VBox.margin>
@@ -347,12 +337,15 @@
                                        </children>
                                     </AnchorPane>
                                 </content>
+                                 <font>
+                                    <Font size="19.0" />
+                                 </font>
                               </TitledPane>
                            </children>
                         </AnchorPane>
-                        <AnchorPane maxHeight="140.0" prefHeight="139.0" prefWidth="307.0" VBox.vgrow="ALWAYS">
+                        <AnchorPane maxHeight="190.0" prefHeight="190.0" prefWidth="443.0" VBox.vgrow="ALWAYS">
                            <children>
-                              <TitledPane animated="false" layoutX="14.0" layoutY="-15.0" prefHeight="188.0" prefWidth="202.0" styleClass="contact-info-title-pane" text="Address" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <TitledPane animated="false" layoutX="14.0" layoutY="-15.0" prefHeight="188.0" prefWidth="202.0" styleClass="contact-info-title-pane" text="Contact Address" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <content>
                                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="297.0" prefWidth="200.0">
                                        <children>
@@ -360,7 +353,7 @@
                                              <children>
                                                 <HBox prefHeight="46.0" prefWidth="285.0" spacing="5.0">
                                                    <children>
-                                                      <Label text="Street">
+                                                      <Label prefHeight="21.0" prefWidth="66.0" text="Street:">
                                                          <font>
                                                             <Font size="15.0" />
                                                          </font>
@@ -374,7 +367,7 @@
                                                 </HBox>
                                                 <HBox prefHeight="46.0" prefWidth="285.0" spacing="5.0">
                                                    <children>
-                                                      <Label text="City">
+                                                      <Label prefWidth="66.0" text="City:">
                                                          <font>
                                                             <Font size="15.0" />
                                                          </font>
@@ -388,7 +381,7 @@
                                                 </HBox>
                                                 <HBox prefHeight="46.0" prefWidth="285.0" spacing="5.0">
                                                    <children>
-                                                      <Label text="State">
+                                                      <Label prefWidth="66.0" text="State:">
                                                          <font>
                                                             <Font size="15.0" />
                                                          </font>
@@ -402,7 +395,7 @@
                                                 </HBox>
                                                 <HBox prefHeight="46.0" prefWidth="285.0" spacing="5.0">
                                                    <children>
-                                                      <Label text="ZipCode">
+                                                      <Label prefHeight="21.0" prefWidth="66.0" text="ZipCode:">
                                                          <font>
                                                             <Font size="15.0" />
                                                          </font>
@@ -419,22 +412,41 @@
                                        </children>
                                     </AnchorPane>
                                  </content>
+                                 <font>
+                                    <Font size="19.0" />
+                                 </font>
                               </TitledPane>
                            </children>
                         </AnchorPane>
-                        <AnchorPane prefHeight="91.0" prefWidth="312.0" VBox.vgrow="ALWAYS">
+                        <AnchorPane prefHeight="40.0" prefWidth="443.0" VBox.vgrow="ALWAYS">
                            <children>
                               <HBox alignment="TOP_RIGHT" prefHeight="36.0" prefWidth="219.0" spacing="1.0" style="-fx-border-color: #e1e2e1;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                  <children>
+                                    <Button fx:id="InfoDeleteContactButton" mnemonicParsing="false" onAction="#handleDeleteContactAction" prefHeight="34.0" prefWidth="81.0" text="Delete">
+                                       <graphic>
+                                          <ImageView fitHeight="26.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@images/icons/icons8-delete-48.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                       <tooltip>
+                                          <Tooltip text="Delete Contact" />
+                                       </tooltip>
+                                       <styleClass>
+                                          <String fx:value="delete-contact-button" />
+                                          <String fx:value="contact-info-button" />
+                                       </styleClass>
+                                    </Button>
                                     <Button mnemonicParsing="false" onAction="#handleExportContactAction" prefHeight="43.0" prefWidth="76.0" styleClass="contact-info-button" text="Export">
                                        <graphic>
-                                          <FontIcon iconColor="#7c7c7c" iconLiteral="mdi2e-export" iconSize="20" />
+                                          <FontIcon iconColor="#007fb5" iconLiteral="mdi2e-export" iconSize="20" />
                                        </graphic>
                                     </Button>
                                     <Separator orientation="VERTICAL" prefHeight="200.0" />
                                     <Button mnemonicParsing="false" onAction="#handleCloseContactAction" prefHeight="40.0" prefWidth="73.0" styleClass="contact-info-button" text="Close">
                                        <graphic>
-                                          <FontIcon iconLiteral="mdi2e-exit-to-app" iconSize="20" />
+                                          <FontIcon iconColor="#d02d00" iconLiteral="mdi2c-close" iconSize="20" />
                                        </graphic>
                                     </Button>
                                  </children>

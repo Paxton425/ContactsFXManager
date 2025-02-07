@@ -28,7 +28,7 @@ public class ContactsApplication extends Application {
         FXMLMainController controller = loader.getController();
         controller.setApplication(this);
         
-        Image favicon = new Image(new File("C:\\Users\\admin\\IdeaProjects\\ContactsMnagerFX\\src\\main\\resources\\contactsmanager\\contactsmanagerfx\\images\\telephone-icon.png").toURI().toString());
+        Image favicon = new Image(getClass().getResource("images/telephone-icon.png").toURI().toString());
         stage.setTitle(STYLESHEET_MODENA);
         stage.setTitle("Contacts ManagerFx");
         stage.getIcons().add(favicon);

@@ -26,6 +26,7 @@ import javafx.stage.StageStyle;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
@@ -60,16 +61,17 @@ abstract class ContactInformationController {
 
     protected Contact viewedContact;
     protected ContactsManager contactsManager;
-    protected Application application;
     protected Runnable reloadAction;
 
-    protected String imageRootPath = ("C:\\Users\\admin\\IdeaProjects\\ContactsMnagerFX\\src\\main\\resources\\contactsmanager\\contactsmanagerfx\\images\\contactimages\\");
+    protected String imageRootPath = ("images/contactimages/");
 
     Alerts alerts = new Alerts();
 
+    public abstract Application getApplication();
     @FXML
     public void handleEmailAction(ActionEvent event) {
         event.consume();
+        Application application = getApplication();
         emailInfo.cursorProperty().set(Cursor.WAIT);
         if (emailInfo == null || emailInfo.getText().isEmpty()) {
             alerts.showErrorAlert("No email address available.");
@@ -134,18 +136,19 @@ abstract class ContactInformationController {
         try{
             Image image;
             if(imageName != null && !imageName.isEmpty()) {
-                File file = new File(imageRootPath+imageName);
-                image = new Image(file.toURI().toString());
+                URL image_URL = getClass().getResource(imageRootPath+imageName);
+                image = new Image(image_URL.toURI().toString());
             }
             else {
-                File file = new File(imageRootPath+"default.png");
-                image = new Image(file.toURI().toString());
+                URL image_URL = getClass().getResource(imageRootPath+"default.png");
+                image = new Image(image_URL.toURI().toString());
             }
 
             contactPictureCircle.setFill(new ImagePattern(image));
         }
         catch(Exception e){
-            alerts.showErrorAlert("Something went wrong while setting image!");
+            alerts.showErrorAlert("Something went wrong while getting image!");
+            e.printStackTrace();
         }
     }
 }

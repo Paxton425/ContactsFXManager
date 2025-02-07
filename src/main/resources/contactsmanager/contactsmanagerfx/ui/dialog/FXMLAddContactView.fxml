@@ -14,7 +14,7 @@
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #e10e10e10; -fx-border-color: #d6d6d6;" stylesheets="@fxmldialog.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="contactsmanager.contactsmanagerfx.ui.dialog.AddContactFXMLController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #e10e10e10; -fx-border-color: #d6d6d6;" stylesheets="@dialogStyles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="contactsmanager.contactsmanagerfx.ui.dialog.AddContactFXMLController">
     <children>
         <VBox prefHeight="511.0" prefWidth="617.0">
             <children>

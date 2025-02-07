@@ -56,13 +56,12 @@
     -fx-border-width: 0;
 }
 .edit-image-button {
-    -fx-background-color: transparent;
+    -fx-background-color: #0089dd;
     -fx-background-radius: 100;
-    -fx-background-color: #246f9a;
     -fx-border-width: 0;
 }
 .edit-image-button:hover{
-    -fx-background-color: #5594ab;
+    -fx-background-color: #007cbf;
 }
 
 .edit-contact-top-menu-button:hover {
