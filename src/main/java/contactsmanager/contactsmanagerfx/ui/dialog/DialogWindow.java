@@ -2,17 +2,20 @@ package contactsmanager.contactsmanagerfx.ui.dialog;
 
 import contactsmanager.contactsmanagerfx.contacts.Contact;
 import contactsmanager.contactsmanagerfx.contacts.ContactsManager;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.stage.Stage;
 
-public abstract class DialogWindow {
 
-    protected Runnable reloadAction;
-    protected Runnable exitControl;
-    protected ContactsManager manager;
-    protected Contact contact;
+public interface DialogWindow {
 
-    public void setExitControl(Runnable exitControl){ this.exitControl = exitControl; }
+    Runnable reloadAction = null;
+    ContactsManager manager = null;
+    Contact contact = null;
+    public Stage stage = null;
+
+    public void setStage(Stage stage);
     public abstract void setContactsManager(ContactsManager manager);
-    public void closeWindow(){
-        exitControl.run();
-    }
+    public abstract void setReloadAction(Runnable reloadAction);
+    public void setOnRequestWindowExit(EventHandler<ActionEvent> event);
 }

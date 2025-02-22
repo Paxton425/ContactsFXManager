@@ -22,6 +22,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
+import javafx.scene.Parent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -47,6 +48,7 @@ public class ContactsItem {
     private Pane anchorPane;
     private Contact contact;
     private String contactText;
+    private boolean isFavourite;
     private Alerts alerts;
 
     private boolean menuOpenToggle = true;
@@ -100,8 +102,11 @@ public class ContactsItem {
     }
     
     //Button to be created each time a new contact is added.
-    public StackPane getContactItem(ViewBy viewBy) {
-        
+    public StackPane getContactItem(ViewBy viewBy, boolean isFavourite) {
+
+        this.isFavourite = isFavourite;
+        ImageView starIcon = getFavouriteStar();
+
         if(viewBy == ViewBy.NAME)
             this.contactText = (contact.Name+"\n "+contact.Phone);
         else if (viewBy == ViewBy.EMAIL)
@@ -148,7 +153,10 @@ public class ContactsItem {
 
         contactMenu.getItems().add(0, delete);
         contactMenu.getItems().add(1, edit);
-        contactMenu.getItems().add(2, addToFavourites);
+        if(isFavourite)
+            contactMenu.getItems().add(2, removeFromFavourites);
+        else
+            contactMenu.getItems().add(2, addToFavourites);
         contactMenu.getItems().add(3, separator);
         contactMenu.getItems().add(4, exportContact);
         
@@ -170,11 +178,13 @@ public class ContactsItem {
         });
         
         addToFavourites.setOnAction(e->{
+            pane.getChildren().add(starIcon);
             onAddTofavourites.handle(e);
             contactMenu.getItems().remove(addToFavourites);
             contactMenu.getItems().add(2, removeFromFavourites);
         });
         removeFromFavourites.setOnAction(e->{
+            pane.getChildren().remove(starIcon);
             onRemoveFromFavourites.handle(e);
             contactMenu.getItems().remove(removeFromFavourites);
             contactMenu.getItems().add(2, addToFavourites);
@@ -194,13 +204,32 @@ public class ContactsItem {
             }
         });
 
-        pane.getChildren().addAll(contactButton, imageCircle, trigger);
+        if(isFavourite)
+            pane.getChildren().addAll(contactButton, imageCircle, starIcon, trigger);
+        else
+            pane.getChildren().addAll(contactButton, imageCircle, trigger);
         pane.setId(contact.Id+"");
         return pane;
     }
 
     public Contact getContact(){
         return contact;
+    }
+
+    private ImageView getFavouriteStar(){
+        try {
+            Image image = new Image(getImageURL("icons/icons8-star-48.png").toURI().toString());
+            ImageView starView = new ImageView(image);
+            starView.setFitHeight(20);
+            starView.setFitWidth(20);
+
+            StackPane.setMargin(starView, new Insets(20, 0, 0, 28));
+            StackPane.setAlignment(starView, Pos.CENTER_LEFT);
+
+            return starView;
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
     }
     
     private Image getItemImage(String imageName) {

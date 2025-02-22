@@ -48,7 +48,7 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.FileImageInputStream;
 
-public class FXMLEditContactController extends DialogWindow implements Initializable {
+public class FXMLEditContactController  implements Initializable, DialogWindow {
 
     @FXML
     private AnchorPane AnchorPane;
@@ -90,17 +90,19 @@ public class FXMLEditContactController extends DialogWindow implements Initializ
     private static final int MIN_HEIGHT = 150;
     private static final double DESIRED_ASPECT_RATIO = 1.0; // Square
     private static final double TOLERANCE = 0.01;
-    
+
+    private ContactsManager manager;
     private String oldImageName;
     private String imageName;
     private String imagePath;
 
+    private EventHandler<ActionEvent> exitRequestHandler;
     private boolean contactModified = false;
 
     public EventHandler<ActionEvent> onSaveChanges;
     public void setOnSaveChanges(EventHandler<ActionEvent> handler){this.onSaveChanges = handler;}
 
-
+    private Runnable reloadAction;
     Alerts alerts = new Alerts();
     
     @FXML
@@ -167,9 +169,25 @@ public class FXMLEditContactController extends DialogWindow implements Initializ
     }
 
     @Override
+    public void setStage(Stage stage) {
+
+    }
+
+    @Override
     public void setContactsManager(ContactsManager manager){
         this.manager = manager;
     }
+
+    @Override
+    public void setReloadAction(Runnable reloadAction) {
+        this.reloadAction = reloadAction;
+    }
+
+    @Override
+    public void setOnRequestWindowExit(EventHandler<ActionEvent> event) {
+        this.exitRequestHandler = event;
+    }
+
     public Contact getUpdatedContact(){
         return updatedContact;
     }
@@ -204,22 +222,22 @@ public class FXMLEditContactController extends DialogWindow implements Initializ
     }
 
     @FXML
-    public void handleDiscardChanges() {
-        discardChanges();
+    public void handleDiscardChanges(ActionEvent event) {
+        discardChanges(event);
     }
 
-    private void discardChanges(){
+    private void discardChanges(ActionEvent event){
         if(contactModified == true){
             boolean confirmation = alerts.showConfirmationAlert("Discard Changes?");
             if(confirmation)
-                closeWindow();
+                exitRequestHandler.handle(event);
         }
-        else closeWindow();
+        else exitRequestHandler.handle(event);
     }
     @FXML
     public void handleExitWindowAction(ActionEvent event) {
         // Close the window without saving
-        discardChanges();
+        discardChanges(event);
     }
 
     private boolean menuOpenToggle = false;

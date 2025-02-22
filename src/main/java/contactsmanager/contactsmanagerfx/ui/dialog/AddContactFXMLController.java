@@ -40,7 +40,7 @@ import javax.imageio.stream.FileImageInputStream;
  *
  * @author admin
  */
-public class AddContactFXMLController extends DialogWindow implements Initializable {
+public class AddContactFXMLController implements Initializable, DialogWindow{
 
     @FXML
     private javafx.scene.layout.AnchorPane AnchorPane;
@@ -74,6 +74,8 @@ public class AddContactFXMLController extends DialogWindow implements Initializa
     private String contactImagesRootPath = ("C:\\Users\\admin\\IdeaProjects\\ContactsMnagerFX\\src\\main\\resources\\contactsmanager\\contactsmanagerfx\\images\\contactimages\\");
     
     private ContactsManager manager;
+    private Runnable reloadAction;
+    private EventHandler<ActionEvent> onExitRequest;
     
     //Image dimentions and tollerance
     private static final int MIN_WIDTH = 150;
@@ -99,7 +101,7 @@ public class AddContactFXMLController extends DialogWindow implements Initializa
         // Close the window without saving
         boolean proceed = alerts.showConfirmationAlert("Discard Changes?");
         if(proceed) {
-            closeWindow();
+            onExitRequest.handle(event);
         }
     }
 
@@ -143,17 +145,17 @@ public class AddContactFXMLController extends DialogWindow implements Initializa
                     image.errorProperty().addListener((obs, oldVal, newVal) ->{
                         if (newVal){
                             System.err.println("Error loading image: " + image.getException().getMessage());
-                            showErrorAlert("Error loading image. Please select another image.");
+                            alerts.showErrorAlert("Error loading image. Please select another image.");
                         }
                     });
                     imageName = file.getName();
                     imagePath = file.getPath();
                 } catch (Exception e) {
                     System.err.println("Error loading image: " + e.getMessage());
-                    showErrorAlert("Error loading image. Please select another image.");
+                    alerts.showErrorAlert("Error loading image. Please select another image.");
                 }
             } else {
-                showErrorAlert("Image does not meet the requirements.\nMinimum size: " + MIN_WIDTH + "x" + MIN_HEIGHT + "\nAspect ratio: Near " + DESIRED_ASPECT_RATIO + " (tolerance: " + TOLERANCE + ")");
+                alerts.showErrorAlert("Image does not meet the requirements.\nMinimum size: " + MIN_WIDTH + "x" + MIN_HEIGHT + "\nAspect ratio: Near " + DESIRED_ASPECT_RATIO + " (tolerance: " + TOLERANCE + ")");
             }
         }
     }
@@ -177,10 +179,7 @@ public class AddContactFXMLController extends DialogWindow implements Initializa
                 errorMessage = "You have entered an incorrect email format";
             
             if(!errorMessage.isEmpty()){
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.initStyle(StageStyle.UNDECORATED);
-                alert.setContentText(errorMessage);
-                alert.show();
+                alerts.showErrorAlert(errorMessage);
             }
             else if(manager != null) {
                 ContactBuilder contactBuilder = new ContactBuilder();
@@ -269,23 +268,32 @@ public class AddContactFXMLController extends DialogWindow implements Initializa
             return width >= MIN_WIDTH && height >= MIN_HEIGHT && Math.abs(aspectRatio - DESIRED_ASPECT_RATIO) <= TOLERANCE;
         } catch (IOException e) {
             System.err.println("Error reading image metadata: " + e.getMessage());
-            showErrorAlert("Error reading image metadata!");
+            alerts.showErrorAlert("Error reading image metadata!");
             return false;
         }
     }
-    
-    private void showErrorAlert(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Image Error");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+
+    @Override
+    public void setStage(Stage stage) {
+
     }
 
     @Override
     public void setContactsManager(ContactsManager manager){
         this.manager = manager;
     }
+
+    @Override
+    public void setReloadAction(Runnable reloadAction) {
+        this.reloadAction = reloadAction;
+    }
+
+    @Override
+    public void setOnRequestWindowExit(EventHandler<ActionEvent> event) {
+        this.onExitRequest = event;
+    }
+
+
     public Contact getContact() throws NullPointerException{
         return contact;
     }

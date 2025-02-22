@@ -25,8 +25,8 @@ public class WindowControl<T extends DialogWindow> {
         this.windowStage = new Stage();
         focusBlur = false;
         exitControl = ()->{
-            windowStage.close();
             if(focusBlur) blurNode.setEffect(null);
+            windowStage.close();
         };
     }
 
@@ -42,17 +42,40 @@ public class WindowControl<T extends DialogWindow> {
         this.loader = loader;
         root = loader.load();
         controller = loader.getController();
+        controller.setStage(windowStage);
+        controller.setOnRequestWindowExit(e->{
+            exitControl.run();
+        });
     }
     public void showWindow(StageStyle stageStyle, Modality modality){
         windowStage.initModality(Modality.APPLICATION_MODAL);
         windowStage.initStyle(StageStyle.UNDECORATED);
         windowStage.setScene(new Scene(root));
+        windowStage.setOnCloseRequest(e->{
+            exitControl.run();
+        });
+        Stage pstage = getProgressWindow();
+        pstage.show();
         windowStage.show();
-
-        controller.setExitControl(exitControl);
+        pstage.close();
 
         if(focusBlur)
             blurNode.setEffect(new BoxBlur(3, 3, 3));
+    }
+
+    private Stage getProgressWindow(){
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("ui/dialog/ProgressView.fxml"));
+        try {
+            Parent progressRoot = loader.load();
+
+            Stage stage = new Stage(StageStyle.UNDECORATED);
+            stage.setScene(new Scene(progressRoot));
+            stage.initModality(Modality.APPLICATION_MODAL);
+
+            return stage;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
     public void closeWindow(){
         exitControl.run();

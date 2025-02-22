@@ -6,18 +6,24 @@ package contactsmanager.contactsmanagerfx.contacts;
  */
 
 
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.Unmarshaller;
-import java.io.File;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  *
@@ -37,7 +43,7 @@ public class ContactsManager {
     private static ContactsManager manager;
     private ContactsManager(){//Private to Prevenet instantiatiion
         this.contactsList = loadContactsFromFile().getContactList();
-        this.favourites = new ArrayList<>();
+        this.favourites = loadFavourites();
         this.recent = new ArrayList<>();
     }
     
@@ -47,7 +53,8 @@ public class ContactsManager {
         return manager;
     }
 
-    private String path = ("contactsdata/SavedContactsList.xml");
+    private String contacts_path = ("contactsdata/SavedContactsList.xml");
+    private String meta_data_path = ("contactsdata/Favourites.json");
 
     public void reload(){
         this.contactsList = loadContactsFromFile().getContactList();
@@ -95,9 +102,21 @@ public class ContactsManager {
         contactsList.add(newContact); // Add the new contact
         saveContactsToFile(contacts); //Save Contact
     }
+
+    public void addContacts(ArrayList<Contact> newContacts) throws Exception {
+        Contacts contacts = loadContactsFromFile();
+        contactsList = contacts.getContactList();
+        if (contactsList == null) {
+            contactsList = new ArrayList<>(); // Ensure contactList is initialized
+            contacts.setContactList(contactsList); // Set the list back to the Contacts object
+        }
+
+        contactsList.addAll(newContacts); // Add the new contact
+        saveContactsToFile(contacts); //Save Contact
+    }
     
     private Contacts loadContactsFromFile() {
-        try(InputStream FILE_INPUT_STREAM = getClass().getResourceAsStream(path)) {
+        try(InputStream FILE_INPUT_STREAM = getClass().getResourceAsStream(contacts_path)) {
             JAXBContext jaxbContext = JAXBContext.newInstance(Contacts.class);
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
@@ -110,9 +129,48 @@ public class ContactsManager {
             throw new RuntimeException(e);
         }
     }
+
+    private ArrayList<Contact> loadFavourites(){
+        try {
+            if(favourites == null)
+                favourites = new ArrayList<>();
+            URL file_url = getClass().getResource(meta_data_path);
+            File file = new File(file_url.toURI());
+
+            int[] favIds = getFavouritesIds(file);
+            if(contactsList !=null && favIds != null)
+                for(Contact contact : contactsList)
+                    for(int id : favIds)
+                        if(contact.Id == id)
+                            favourites.add(contact);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return favourites;
+    }
+
+    public int[] getFavouritesIds(File jsonFile) throws Exception {
+        int[] favIds = new int[0];
+        ObjectMapper mapper = new JsonMapper();
+        JsonNode rootNode = mapper.readTree(jsonFile);
+        JsonNode favouritesNode = rootNode.path("favourites");
+        if(favouritesNode.isArray())
+            favIds = new int[favouritesNode.size()];
+            for(int i =0; i<favouritesNode.size(); i++) {
+                JsonNode node = favouritesNode.get(i);
+                favIds[i] = node.path("contactId").asInt();
+            }
+
+        return favIds;
+    }
     
-    private void saveContactsToFile(Contacts contacts) {
-        URL fileUrl = getClass().getResource(path);
+    public void saveContactsToFile(Contacts contacts) {
+        URL fileUrl = getClass().getResource(contacts_path);
         try(OutputStream FILE_OUTPUT_STREAM = Files.newOutputStream(Paths.get(fileUrl.toURI()))) {
             JAXBContext jaxbContext = JAXBContext.newInstance(Contacts.class);
             Marshaller marshaller = jaxbContext.createMarshaller();
@@ -138,12 +196,53 @@ public class ContactsManager {
         return this.viewBy;
     }
 
+
     public void addToFavourites(Contact contact){
-        favourites.add(contact);
+
+        favourites = (favourites != null )? favourites : new ArrayList<>();
+        URL file_url = getClass().getResource(meta_data_path);
+        try {
+            File json_file = new File(file_url.toURI());
+            ObjectMapper mapper = new JsonMapper();
+            ObjectNode rootNode = (ObjectNode) mapper.readTree(json_file);
+            ArrayNode favouritesNode = (ArrayNode) rootNode.get("favourites");
+
+            ObjectNode newNode = mapper.createObjectNode();
+            newNode.put("contactId", contact.Id);
+            favouritesNode.add(newNode);
+
+            rootNode.set("favourites", favouritesNode);
+            mapper.writeValue(json_file, rootNode);
+
+            favourites.add(contact);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
     }
-    public void removeFromFavourites(Contact contact) { favourites.remove(contact);}
+    public void removeFromFavourites(Contact contact) {
+        favourites = (favourites != null )? favourites : new ArrayList<>();
+        URL file_url = getClass().getResource(meta_data_path);
+        try{
+            File json_file = new File(file_url.toURI());
+            ObjectMapper mapper = new JsonMapper();
+            JsonNode rootNode = mapper.readTree(json_file);
+            ArrayNode favouritesNode = (ArrayNode) rootNode.get("favourites");
+            for(JsonNode node : favouritesNode)
+                if(node.get("contactId").asInt() == contact.Id)
+                    favourites.remove(node);
+
+            ((ObjectNode)rootNode).set("favourites", favouritesNode);
+            mapper.writeValue(json_file, rootNode);
+
+            favourites.remove(contact);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    }
     public ArrayList<Contact> getFavouriteContacts(){
-        return favourites;
+        return (favourites != null )? favourites : new ArrayList<>();
     }
 
     public void addToRecent(Contact contact){
@@ -161,7 +260,7 @@ public class ContactsManager {
         if(recent != null){
             return recent;
         }
-        return null;
+        return new ArrayList<>();
     }
 
     public int findContactIndex(ArrayList<Contact> contactList, int contactId) {

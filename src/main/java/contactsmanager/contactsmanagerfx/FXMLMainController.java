@@ -17,6 +17,7 @@ import contactsmanager.contactsmanagerfx.ui.ContactsItem;
 import contactsmanager.contactsmanagerfx.ui.dialog.AddContactFXMLController;
 import contactsmanager.contactsmanagerfx.ui.dialog.Alerts;
 import contactsmanager.contactsmanagerfx.ui.dialog.FXMLEditContactController;
+import contactsmanager.contactsmanagerfx.ui.dialog.FXMLImportController;
 import javafx.animation.Interpolator;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -86,6 +87,7 @@ public class FXMLMainController extends ContactInformationController implements 
 
     private ContactsManager contactsManager;
     private ArrayList<Contact> contacts;
+    private ArrayList<Contact> favouriteContacts;
     private Contact clickedContact;
     private boolean isViewByOpen = false;
     private Runnable reloadAction;
@@ -209,11 +211,25 @@ public class FXMLMainController extends ContactInformationController implements 
     
     @FXML
     private void handleImportAction(ActionEvent event){
-        
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("ui/dialog/FXMLImportView.fxml"));
+
+            WindowControl windowControl = new WindowControl();
+            windowControl.createWindow(loader);
+            windowControl.setFocusBlur(rootAchorPane);
+
+            FXMLImportController controller = (FXMLImportController) windowControl.getController();
+            controller.setContactsManager(contactsManager);
+            controller.setReloadAction(reloadAction);
+
+            windowControl.showWindow(StageStyle.UNDECORATED, Modality.APPLICATION_MODAL);
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
     @FXML
     private void handleExportContactAction(ActionEvent event){
-
     }
 
     @FXML
@@ -299,7 +315,7 @@ public class FXMLMainController extends ContactInformationController implements 
                 Contact contact = addContactController.getContact();
 
                 addNewContact(contact);
-                addContactController.closeWindow(); //Close the window
+                windowControl.closeWindow(); //Close the window
 
                 alerts.showInformationAlert("Contact Saved!");
                 reloadContacts();
@@ -334,7 +350,7 @@ public class FXMLMainController extends ContactInformationController implements 
             controller.setOnSaveChanges(event -> {
                 saveEditChanges(controller.getUpdatedContact());
                 closeContactInformation();
-                controller.closeWindow();
+                windowControl.closeWindow();
             });
 
             windowControl.setFocusBlur(rootAchorPane);
@@ -358,13 +374,14 @@ public class FXMLMainController extends ContactInformationController implements 
     @Override
     protected void deleteContact(Contact contact) {
         if (contact != null) {
-            boolean proceed = alerts.deleteConfirmation(contact.Name);
+            String confirmationMessage = "Delete "+contact.Name+" from contacts?";
+            boolean proceed = alerts.showConfirmationAlert(confirmationMessage);
             if (proceed) {
                 try {
                     closeContactInformation();
 
                     contactsManager.deleteContact(contact.Id);
-                    contactsManager.reload();
+                    reloadContacts();
                 } catch (Exception e) {
                     alerts.showErrorAlert("Could Not Delete Contact");
                     e.printStackTrace();
@@ -392,6 +409,12 @@ public class FXMLMainController extends ContactInformationController implements 
             else {
                 for(int i=0; i<contacts.size(); i++)
                 {
+                    boolean isFavourite = false;
+                    if (favouriteContacts != null)
+                        for(Contact contact : favouriteContacts)
+                            if(contact.Id == contacts.get(i).Id)
+                                isFavourite = true;
+
                     ContactsItem item = new ContactsItem(contactsListVBox, contacts.get(i));
                     item.setOnClickContact((event->{
                         if(clickedContact != null) {
@@ -429,7 +452,7 @@ public class FXMLMainController extends ContactInformationController implements 
 
                     contactsListVBox
                             .getChildren()
-                            .add(vBoxIndex, item.getContactItem(contactsManager.getViewBy()));
+                            .add(vBoxIndex, item.getContactItem(contactsManager.getViewBy(), isFavourite));
                     vBoxIndex++;
                 }
             }
@@ -495,7 +518,7 @@ public class FXMLMainController extends ContactInformationController implements 
 
     private Label getStateMessage(String message){
         Label messageLabel = new Label(message);
-        messageLabel.setStyle("-fx-font-size: 16; -fx-fill: derive(black, 80%); -fx-font-weight: bold;");
+        messageLabel.setStyle("-fx-font-size: 13; -fx-fill: derive(#d6d6d6, 80%); -fx-font-style: italic;");
         return messageLabel;
     }
     
@@ -541,7 +564,11 @@ public class FXMLMainController extends ContactInformationController implements 
         //Initialize Constructors
         contactsManager = ContactsManager.getInstance();
         contacts = contactsManager.getContacts();
+        favouriteContacts = contactsManager.getFavouriteContacts();
         loadContacts(contacts);
+        reloadAction = ()->{
+            reloadContacts();
+        };
 
         applyAccelerators(); //Shortcut Keys
     }   

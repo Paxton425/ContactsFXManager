@@ -82,3 +82,72 @@
 .edit-contact-text-field:focused {
     -fx-border-color: #1f82c9;
 }
+
+/**  --CUSTOM ALERTS--  **/
+.alert-root {
+    -fx-border-color: #23a8e1;
+}
+.alert-header {
+    -fx-background-color: #23a8e1;
+}
+.alert-button {
+    -fx-background-color: #e1e2e1;
+    -fx-pref-width: 88;
+}
+.alert-button:hover {
+    -fx-background-color: #d6d6d6;
+    -fx-font-size: 13px;
+}
+
+/** --IMPORT VIEW-- **/
+.import-box{
+    -fx-border-color:  #00addd;
+    -fx-border-style: dashed;
+    -fx-border-width: 2px;
+    -fx-border-radius: 20px;
+}
+
+.choose-file-button {
+    -fx-background-color: #23a8e1;
+    -fx-background-radius: 0;
+    -fx-pref-height: 40px;
+}
+.choose-file-button:hover {
+    -fx-background-color: #228ba8;
+}
+
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-padding: -1;
+}
+.scroll-bar {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.scroll-bar:hover {
+    -fx-background-color: silver;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: silver;
+    -fx-background-insets: 0, 0, 0;
+    -fx-background-radius: 0em;
+}
+
+.scroll-bar .thumb:hover {
+    -fx-background-color: derive(black, 60%);
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow{
+    -fx-shape: " ";
+    -fx-padding :0;
+}
+
+.scroll-bar .increment-button ,
+.scroll-bar .decrement-button {
+    -fx-background-color :transparent;
+    -fx-background-radius : 0.0em;
+    -fx-padding :0.0 10.0 0.0 0.0;
+}

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane prefHeight="361.0" prefWidth="536.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="contactsmanager.contactsmanagerfx.ui.dialog.ProgressController">
+   <children>
+      <BorderPane layoutX="160.0" layoutY="14.0" prefHeight="361.0" prefWidth="543.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <center>
+            <AnchorPane prefHeight="126.0" prefWidth="536.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Label fx:id="ProgressMessage" contentDisplay="CENTER" layoutX="182.0" layoutY="238.0" prefHeight="54.0" prefWidth="213.0" text="Loading Please Wait..." textAlignment="CENTER" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="182.0" AnchorPane.rightAnchor="141.0" AnchorPane.topAnchor="240.0">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+                  <ImageView fitHeight="144.0" fitWidth="190.0" layoutX="196.0" layoutY="94.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../images/806.gif" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+         </center>
+      </BorderPane>
+   </children>
+</AnchorPane>

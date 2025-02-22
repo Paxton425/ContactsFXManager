@@ -4,66 +4,94 @@
  */
 package contactsmanager.contactsmanagerfx.ui.dialog;
 
+import java.io.IOException;
 import java.util.Optional;
+
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  *
  * @author admin
  */
 public class Alerts {
-    public boolean deleteConfirmation(String itemName) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmation");
-        alert.setHeaderText("Delete Confirmation");
-        alert.setContentText("Are you sure you want to delete " + itemName + "?");
+    private Stage alertStage;
+    private CustomAlertController alertController;
 
-        ButtonType buttonTypeOne = new ButtonType("Yes");
-        ButtonType buttonTypeTwo = new ButtonType("No");
-        alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo);
+    //Set up alert stage
+    public Alerts(){
 
-        Optional<ButtonType> result = alert.showAndWait();
+    }
 
-        return result.get() == buttonTypeOne; // True if user clicks "Yes", False otherwise
+    private Stage getStage(){
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("CustomAlertView.fxml"));
+        try {
+            Parent root = loader.load();
+
+            alertController = loader.getController();
+
+            alertStage = new Stage();
+            alertStage.setScene(new Scene(root));
+            alertStage.initStyle(StageStyle.UNDECORATED);
+            alertStage.initModality(Modality.APPLICATION_MODAL);
+            return alertStage;
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    public void showSuccessAlert(String message){
+        alertStage = getStage();
+        alertController.setSuccessType();
+        alertController.setTitle("Success");
+        alertController.setMessage(message);
+        alertStage.show();
     }
 
     public boolean showConfirmationAlert(String message) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle(null);
-        alert.setHeaderText("Confirmation");
-        alert.setContentText(message);
+        alertStage = getStage();
+        alertController.setAlertType(Alert.AlertType.CONFIRMATION);
+        alertController.setTitle("Confirmation");
+        alertController.setMessage(message);
+        alertStage.showAndWait();
 
-        ButtonType buttonTypeOne = new ButtonType("Yes");
-        ButtonType buttonTypeTwo = new ButtonType("No");
-        alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo);
-
-        Optional<ButtonType> result = alert.showAndWait();
-
-        return result.get() == buttonTypeOne; // True if user clicks "Yes", False otherwise
+        return alertController.getConfrimationResult(); // True if user clicks "Yes", False otherwise
     }
     
     public void showErrorAlert(String errorMessage) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText("An Error Occurred");
-        alert.setContentText(errorMessage);
-        alert.showAndWait(); // Use showAndWait() to block execution until the user closes the alert
+        alertStage = getStage();
+        alertController.setAlertType(Alert.AlertType.ERROR);
+        alertController.setTitle("Error");
+        alertController.setMessage(errorMessage);
+        alertStage.show();
+    }
+    public void showErrorAlert(String title, String errorMessage) {
+        alertStage = getStage();
+        alertController.setAlertType(Alert.AlertType.ERROR);
+        alertController.setTitle(title);
+        alertController.setMessage(errorMessage);
+        alertStage.show();
     }
 
     public void showInformationAlert(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Information");
-        alert.setHeaderText(null); // No header by default
-        alert.setContentText(message);
-        alert.showAndWait();
+        alertStage = getStage();
+        alertController.setAlertType(Alert.AlertType.INFORMATION);
+        alertController.setTitle("Information");
+        alertController.setMessage(message);
+        alertStage.show();
     }
 
     public void showWarningAlert(String message) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Warning");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+        alertStage = getStage();
+        alertController.setAlertType(Alert.AlertType.WARNING);
+        alertController.setTitle("Warning");
+        alertController.setMessage(message);
+        alertStage.show();
     }
 }
